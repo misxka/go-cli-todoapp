@@ -9,7 +9,7 @@ import (
 )
 
 func addRecord(cmd *cobra.Command, args []string) {
-	file := openFileWriteMode("records.csv")
+	file := openFileAppendMode("records.csv")
 	defer file.Close()
 
 	writeCsvRecord(file, []string{
@@ -26,4 +26,8 @@ func listRecords(cmd *cobra.Command, args []string) {
 	}
 
 	printCsvRecords(openFileReadMode("records.csv"), shouldListAll)
+}
+
+func completeRecord(cmd *cobra.Command, args []string) {
+	completeCsvRecord(args[0])
 }

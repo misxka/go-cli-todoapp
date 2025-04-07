@@ -15,6 +15,14 @@ import (
 )
 
 func openFileWriteMode(name string) *os.File {
+	file, err := os.OpenFile(name, os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Fatalln("error opening csv file: ", err)
+	}
+	return file
+}
+
+func openFileAppendMode(name string) *os.File {
 	file, err := os.OpenFile(name, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {
 		log.Fatalln("error opening csv file: ", err)
@@ -40,6 +48,19 @@ func writeCsvRecord(file *os.File, record []string) {
 	}
 
 	w.Flush()
+}
+
+func completeCsvRecord(recordId string) {
+	records := readAllRecords("records.csv")
+
+	for i, record := range records {
+		if len(record) > 0 && record[0] == recordId {
+			records[i][3] = "true"
+			break
+		}
+	}
+
+	writeAllRecords("records.csv", records)
 }
 
 func printCsvRecords(file *os.File, shouldListAll bool) {
@@ -104,4 +125,31 @@ func getLastRecordId() int {
 	}
 
 	return recordId
+}
+
+func readAllRecords(filename string) [][]string {
+	file := openFileReadMode(filename)
+	defer file.Close()
+
+	reader := csv.NewReader(file)
+	records, err := reader.ReadAll()
+	if err != nil {
+		log.Fatalln("error reading csv records: ", err)
+	}
+
+	return records
+}
+
+func writeAllRecords(filename string, records [][]string) {
+	file := openFileWriteMode(filename)
+	defer file.Close()
+
+	writer := csv.NewWriter(file)
+	for _, record := range records {
+		if err := writer.Write(record); err != nil {
+			log.Fatalln("error writing record to csv: ", err)
+		}
+	}
+
+	writer.Flush()
 }

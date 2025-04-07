@@ -18,9 +18,17 @@ var listCmd = &cobra.Command{
 	Run:   listRecords,
 }
 
+var completeCmd = &cobra.Command{
+	Use:   "complete",
+	Short: "Mark a to-do item as completed",
+	Long:  "Mark a to-do item as completed",
+	Run:   completeRecord,
+}
+
 func init() {
 	listCmd.Flags().BoolP("all", "a", false, "List all to-do items")
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(listCmd)
+	rootCmd.AddCommand(completeCmd)
 }
