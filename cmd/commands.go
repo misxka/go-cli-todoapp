@@ -25,10 +25,18 @@ var completeCmd = &cobra.Command{
 	Run:   completeRecord,
 }
 
+var deleteCmd = &cobra.Command{
+	Use:   "delete",
+	Short: "Delete a to-do item",
+	Long:  "Delete a to-do item from the list",
+	Run:   deleteRecord,
+}
+
 func init() {
 	listCmd.Flags().BoolP("all", "a", false, "List all to-do items")
 
 	rootCmd.AddCommand(addCmd)
 	rootCmd.AddCommand(listCmd)
 	rootCmd.AddCommand(completeCmd)
+	rootCmd.AddCommand(deleteCmd)
 }

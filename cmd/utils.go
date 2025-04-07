@@ -50,19 +50,6 @@ func writeCsvRecord(file *os.File, record []string) {
 	w.Flush()
 }
 
-func completeCsvRecord(recordId string) {
-	records := readAllRecords("records.csv")
-
-	for i, record := range records {
-		if len(record) > 0 && record[0] == recordId {
-			records[i][3] = "true"
-			break
-		}
-	}
-
-	writeAllRecords("records.csv", records)
-}
-
 func printCsvRecords(file *os.File, shouldListAll bool) {
 	defer file.Close()
 
@@ -142,6 +129,8 @@ func readAllRecords(filename string) [][]string {
 
 func writeAllRecords(filename string, records [][]string) {
 	file := openFileWriteMode(filename)
+	file.Truncate(0)
+
 	defer file.Close()
 
 	writer := csv.NewWriter(file)

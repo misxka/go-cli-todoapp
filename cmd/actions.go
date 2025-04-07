@@ -29,5 +29,30 @@ func listRecords(cmd *cobra.Command, args []string) {
 }
 
 func completeRecord(cmd *cobra.Command, args []string) {
-	completeCsvRecord(args[0])
+	recordId := args[0]
+	records := readAllRecords("records.csv")
+
+	for i, record := range records {
+		if len(record) > 0 && record[0] == recordId {
+			records[i][3] = "true"
+			break
+		}
+	}
+
+	writeAllRecords("records.csv", records)
+}
+
+func deleteRecord(cmd *cobra.Command, args []string) {
+	recordId := args[0]
+	records := readAllRecords("records.csv")
+
+	var newRecords [][]string
+
+	for _, record := range records {
+		if len(record) > 0 && record[0] != recordId {
+			newRecords = append(newRecords, record)
+		}
+	}
+
+	writeAllRecords("records.csv", newRecords)
 }
